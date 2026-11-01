@@ -1,0 +1,14 @@
+{
+  "name": "mri-viewer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local DICOM viewer with a spatial slice map",
+  "scripts": {
+    "build": "node spatial/build.mjs",
+    "test": "node --test spatial/geometry.test.mjs sharing/crypto.test.mjs"
+  },
+  "engines": {"node": ">=22"},
+  "dependencies": {"three": "0.180.0"},
+  "devDependencies": {"esbuild": "0.25.11"}
+}

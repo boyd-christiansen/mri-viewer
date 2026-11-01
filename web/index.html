@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MRI Viewer</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/spatial.css">
+  <script src="/app.js" defer></script>
+  <script src="/spatial.js" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="/" aria-label="MRI Viewer home">MRI Viewer</a>
+    <button id="import-open" class="primary">Import disc</button>
+  </header>
+  <div class="workspace">
+    <aside class="sidebar">
+      <div class="library-heading"><span class="eyebrow">Library</span><span id="series-count">0 series</span></div>
+      <div class="tabs" role="tablist" aria-label="Library contents">
+        <button id="series-tab" role="tab" aria-selected="true" aria-controls="series-panel">Series</button>
+        <button id="reports-tab" role="tab" aria-selected="false" aria-controls="reports-panel">Documents <span id="document-count">0</span></button>
+      </div>
+      <div id="series-panel" role="tabpanel" aria-labelledby="series-tab"><div id="series-list"></div></div>
+      <div id="reports-panel" role="tabpanel" aria-labelledby="reports-tab" hidden><div id="document-list"></div></div>
+      <div id="library-note" class="library-note"></div>
+    </aside>
+    <main>
+      <section class="study-bar">
+        <div><div class="eyebrow" id="study-date"></div><h1 id="study-title">MRI Viewer</h1><p id="study-subtitle"></p></div>
+        <div class="study-stat"><strong id="frame-count">—</strong><span>images</span></div>
+      </section>
+      <div class="view-switch" role="group" aria-label="Viewer mode"><button id="mode-slices" aria-pressed="true">Slices</button><button id="mode-space" aria-pressed="false">3D map</button></div>
+      <section class="viewer-shell" id="slice-view">
+        <div class="toolbar" aria-label="Image tools">
+          <div class="tool-group"><button id="pan-tool" class="selected" aria-pressed="true" title="Drag to move the image">✥ <span>Move</span></button><button id="window-tool" aria-pressed="false" title="Drag horizontally for contrast, vertically for brightness">◐ <span>Brightness / contrast</span></button></div>
+          <div class="tool-group"><button id="zoom-out" title="Zoom out" aria-label="Zoom out">−</button><span id="zoom-value">Fit</span><button id="zoom-in" title="Zoom in" aria-label="Zoom in">＋</button><button id="reset" title="Reset image view">Reset</button><button id="invert" aria-pressed="false" title="Invert grayscale">◑</button></div>
+          <div class="tool-group end"><button id="export" title="Save the current image as PNG">↓ <span>Save image</span></button><button id="fullscreen" title="Toggle full screen" aria-label="Toggle full screen">⛶</button></div>
+        </div>
+        <div id="viewport" class="viewport" tabindex="0" aria-label="MRI image. Use arrow keys or the mouse wheel to change slices.">
+          <canvas id="image-canvas" aria-label="Current MRI slice" hidden></canvas>
+          <div id="empty-state" class="empty-state">
+            <h2>No images imported</h2>
+            <p>Import an imaging disc to view its DICOM files.</p>
+            <button id="empty-import" class="primary">Import disc</button>
+          </div>
+          <div id="image-overlay" hidden><div class="overlay top-left"><strong id="series-title"></strong><span id="image-details"></span></div><div class="overlay top-right"><span id="window-label"></span><span id="spacing-label"></span></div><span id="edge-top" class="edge top"></span><span id="edge-left" class="edge left"></span><span id="edge-right" class="edge right"></span><span id="edge-bottom" class="edge bottom"></span></div>
+          <div id="loading" class="loading" hidden>Loading image…</div>
+          <div id="image-error" class="image-error" role="alert" hidden></div>
+        </div>
+        <div class="slice-controls">
+          <button id="previous" aria-label="Previous slice">‹</button><button id="play" aria-label="Play slices" aria-pressed="false">▶</button><button id="next" aria-label="Next slice">›</button>
+          <label for="slice-slider" class="sr-only">Slice</label><input id="slice-slider" type="range" min="1" max="1" value="1" disabled><span id="slice-label">No images imported</span>
+        </div>
+        <div id="adjustments" class="adjustments" hidden><label>Brightness <input id="brightness" type="range" step="any"></label><label>Contrast <input id="contrast" type="range" min="1" step="any"></label><button id="auto-window">Use disc settings</button><a id="original-download" href="#">Original DICOM ↓</a></div>
+      </section>
+      <section id="space-view" class="space-shell" aria-label="3D MRI slice map" hidden>
+        <div class="space-heading"><h2>Scan planes</h2><button id="space-fullscreen" aria-label="Expand 3D view">⛶</button></div>
+        <div class="space-layout">
+          <div id="space-stage" class="space-stage">
+            <canvas id="space-canvas" tabindex="0" aria-label="3D scan planes. Drag to rotate, scroll to zoom, and right-drag to pan."></canvas>
+            <div class="space-views" role="group" aria-label="Camera views"><button data-camera="oblique" aria-pressed="true">Perspective</button><button data-camera="front" aria-pressed="false">Front</button><button data-camera="side" aria-pressed="false">Side</button><button data-camera="back" aria-pressed="false">Back</button><button id="space-fit">Fit scans</button></div>
+            <div id="space-status" class="space-status" role="status">Preparing the 3D view…</div>
+            <div id="space-error" class="space-error" role="alert" hidden></div>
+            <div class="space-axis-key"><span>H · Head</span><span>F · Feet</span><span>A · Front</span><span>P · Back</span><span>L / R · Patient’s sides</span></div>
+            <div class="space-interaction-hint">Drag to rotate · Scroll to zoom · Right-drag to pan</div>
+          </div>
+          <aside class="space-controls" aria-label="3D view controls">
+            <div class="space-control-heading"><span class="eyebrow">Series</span><button id="space-preset" title="Reset visible series">Reset</button></div>
+            <div id="space-series-list"></div>
+            <div class="space-active-controls">
+              <span class="eyebrow">Selected</span><h3 id="space-active-title">Select a series</h3>
+              <div class="space-slice-row"><button id="space-prev" aria-label="Previous 3D slice">‹</button><label for="space-slice" class="sr-only">Selected slice in 3D</label><input id="space-slice" type="range" min="1" max="1" value="1"><button id="space-next" aria-label="Next 3D slice">›</button><output id="space-slice-value">—</output></div>
+              <p id="space-slice-position" class="space-small"></p>
+              <label class="space-range-label">Images <select id="space-context"><option value="0">Selected only</option><option value="2" selected>5 per series</option><option value="all">All slices</option></select></label>
+              <details class="space-display-options"><summary>Display</summary>
+              <label class="space-range-label">Image opacity <input id="space-opacity" type="range" min="10" max="100" value="90"></label>
+              <label class="space-check"><input id="space-outlines" type="checkbox" checked> Slice outlines</label>
+              <label class="space-check"><input id="space-intersections" type="checkbox" checked> Intersection lines</label>
+              <label class="space-check"><input id="space-background" type="checkbox" checked> Fade black background</label>
+              </details>
+              <button id="space-open-slice" class="space-open-slice" title="Open the selected slice in 2D">Open in 2D</button>
+            </div>
+            <div class="space-body-controls"><label class="space-range-label">Reference torso <input id="space-body" type="range" min="0" max="100" value="30"></label><label class="space-check"><input id="space-cutaway" type="checkbox" checked> Cutaway</label><p class="space-small">Generic shape, not reconstructed from the scan.</p></div>
+          </aside>
+        </div>
+        <div class="space-caption"><span id="space-reference-note">Recorded scan geometry (mm).</span><span>Borders show scan coverage.</span></div>
+      </section>
+      <footer><span><i class="privacy-dot"></i> Local only</span><span id="keyboard-hint">Scroll or ↑ ↓ to browse · + / − to zoom · R to reset</span><span>Not for diagnostic use.</span></footer>
+    </main>
+  </div>
+  <dialog id="import-dialog">
+    <div class="dialog-heading"><h2>Import disc</h2><button id="import-close" aria-label="Close import dialog">✕</button></div>
+    <p>Copies and verifies the full disc, including images and documents.</p>
+    <div id="volumes"></div>
+    <div id="import-progress" role="status" hidden><progress id="copy-progress"></progress><p id="progress-label"></p></div>
+    <p id="import-message" role="status"></p>
+    <div class="dialog-footer"><button id="refresh-volumes">Check for disc</button></div>
+  </dialog>
+  <div id="toast" role="status" hidden></div>
+</body>
+</html>

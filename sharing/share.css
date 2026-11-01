@@ -1,0 +1,115 @@
+.locked > .app-header,
+.locked > .workspace,
+.locked > #toast {
+  display: none;
+}
+#lock-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 35px 20px;
+  background: #111619;
+}
+.unlock-card {
+  width: min(420px, 100%);
+  text-align: center;
+}
+.unlock-card h1 {
+  font-weight: 400;
+  font-size: 25px;
+  letter-spacing: -.4px;
+  margin: 0 0 28px;
+}
+.unlock-card > p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin: 14px 0 28px;
+}
+.unlock-card label {
+  display: block;
+  text-align: left;
+  font-size: 11px;
+  color: #b5c8bd;
+  margin: 0 0 10px;
+}
+.unlock-card input {
+  font: inherit;
+  font-size: 16px;
+  letter-spacing: 1px;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #50645a;
+  background: #121c20;
+  color: var(--text);
+  border-radius: 7px;
+}
+.unlock-card .primary {
+  width: 100%;
+  padding: 14px;
+  margin-top: 14px;
+}
+.unlock-card small {
+  font-size: 10px;
+  line-height: 1.8;
+  color: #91a89a;
+  display: block;
+  margin-top: 12px;
+}
+.unlock-card #unlock-status {
+  min-height: 22px;
+  margin: 14px 0;
+  color: #d5b69d;
+}
+.app-header #lock-viewer {
+  margin-left: auto;
+  font-size: 12px;
+}
+.unlocked #lock-screen {
+  display: none;
+}
+#report-dialog {
+  width: min(1000px, 96vw);
+  max-width: 1000px;
+  height: 92vh;
+  padding: 16px;
+  overflow: hidden;
+}
+#report-dialog .dialog-heading h2 {
+  font-size: 16px;
+  max-width: 85%;
+}
+#report-frame {
+  display: block;
+  width: 100%;
+  height: calc(100% - 100px);
+  border: 0;
+  background: white;
+  margin: 10px 0;
+}
+#report-download {
+  font-size: 12px;
+  color: var(--mint);
+}
+#empty-state .primary {
+  display: none;
+}
+.local-badge {
+  font-size: 11px;
+}
+#report-pages {
+  height: calc(100% - 100px);
+  overflow: auto;
+  background: #6b7173;
+  margin: 10px 0;
+  padding: 10px;
+  text-align: center;
+}
+#report-pages img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  background: white;
+  margin: 0 auto 12px;
+}

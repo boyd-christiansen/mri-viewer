@@ -1,0 +1,15 @@
+<section id="lock-screen" aria-labelledby="unlock-title">
+  <form id="unlock-form" class="unlock-card">
+    <h1 id="unlock-title">MRI Viewer</h1>
+    <label for="sharing-password">Password</label>
+    <input id="sharing-password" type="password" autocomplete="off" spellcheck="false" required>
+    <button id="unlock-button" class="primary" type="submit">Unlock</button>
+    <p id="unlock-status" role="status"></p>
+    <small>Files decrypt in your browser.</small>
+  </form>
+</section>
+<dialog id="report-dialog">
+  <div class="dialog-heading"><h2 id="report-title">Report</h2><button id="report-close" aria-label="Close report">✕</button></div>
+  <div id="report-pages" aria-label="Shared report pages"></div>
+  <a id="report-download">Download PDF ↓</a>
+</dialog>
