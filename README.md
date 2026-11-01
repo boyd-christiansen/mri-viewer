@@ -8,7 +8,17 @@ A local DICOM viewer with 2D image controls and a 3D slice map. Imports are copi
 - Series overlays, stack outlines, intersection lines and a generic torso reference.
 - Optional password-encrypted static sharing build.
 
-No medical images, reports, patient metadata, screenshots, passwords or deployment credentials are included in this repository.
+## Screenshots
+
+### 2D viewer
+
+![2D viewer showing an imported cervical spine MRI and image controls](docs/screenshots/viewer-2d.jpg)
+
+### 3D slice map
+
+![3D view showing MRI slice stacks around a generic torso reference](docs/screenshots/viewer-3d.jpg)
+
+The preview screenshots are shared with the image owner’s permission. Original imaging files, reports, passwords and deployment credentials are not included.
 
 ## Run locally
 
